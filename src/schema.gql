@@ -1,0 +1,159 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type List {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+  tasks: [Task!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Task {
+  id: ID!
+  title: String!
+  notes: String
+  isBelongToMyDay: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  parentTaskId: Float
+  completed: Boolean!
+  reminder: DateTime
+  list: List
+  tags: [Tag!]
+  user: User
+}
+
+type Tag {
+  id: ID!
+  name: String!
+  color: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+  tasks: [Task!]
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  password: String!
+  role: String!
+  avatar: String
+  avatarPublicId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  tags: [Tag!]
+  lists: [List!]
+  tasks: [Task!]!
+}
+
+type StatusResponse {
+  status: String!
+}
+
+type UserTokenResponse {
+  token: String!
+  user: User!
+}
+
+type PaginationStatus {
+  currentPage: Float
+  numOfItemsPerPage: Float
+  numOfPages: Float
+  nextPage: Float
+  previousPage: Float
+}
+
+type TaskPaginationResponse {
+  paginationStatus: PaginationStatus!
+  tasks: [Task!]!
+  count: Int!
+}
+
+type Next7DaysTasksResponse {
+  day: String!
+  tasks: [Task!]!
+}
+
+type Query {
+  getLoggedUser: User!
+  findAll: [User!]!
+  lists: [List!]!
+  list(id: Float!): List!
+  getTags: [Tag!]!
+  getAllTasks(getAllTasksInput: GetAllTasksInput!): TaskPaginationResponse!
+  getMyDayTasks: [Task!]!
+  getNext7DaysTasks: [Next7DaysTasksResponse!]!
+  getArchivedTasks(search: String!): [Task!]!
+  getTask(taskId: Float!): Task!
+}
+
+input GetAllTasksInput {
+  search: String
+  page: Float
+  limit: Float
+  sort: String
+}
+
+type Mutation {
+  deleteLoggedUser(force: Boolean): StatusResponse!
+  updateLoggedUser(input: UpdateUserProfileInput!): User!
+  register(input: RegisterInput!): UserTokenResponse!
+  login(input: LoginInput!): UserTokenResponse!
+  createList(input: CreateListInput!): List!
+  createTag(name: String!, color: String!): Tag!
+  removeTag(tagId: Float!): StatusResponse!
+  createTask(createTaskInput: CreateTaskInput!): Task!
+  createMyDayTask(title: String!): Task!
+  toggleToMyDay(taskId: Float!): Task!
+  updateTask(taskId: Float!, updateTaskInput: UpdateTaskInput!): Task!
+  toggleTaskStatus(taskId: Float!): Task!
+  addSubtaskToTask(taskId: Float!, title: String!): Task!
+  archiveOrDeleteTask(taskId: Float!, force: Boolean!): StatusResponse!
+  unArchiveTask(taskId: Float!): Task!
+  addTagsToTask(taskId: Float!, tagsIds: [Float!]!): Task!
+}
+
+input UpdateUserProfileInput {
+  username: String
+  email: String
+  password: String
+}
+
+input RegisterInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateListInput {
+  name: String!
+}
+
+input CreateTaskInput {
+  title: String!
+  listId: Float
+}
+
+input UpdateTaskInput {
+  title: String
+  notes: String
+  reminder: DateTime
+  listId: Float
+}
